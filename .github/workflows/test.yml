@@ -21,11 +21,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Test imports
+        run: |
+          python -c "import requests, yfinance"
+          echo "Imports OK"
+
       - name: Check secrets are configured
         env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           MY_EMAIL: ${{ secrets.MY_EMAIL }}
-          MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
         run: |
+          if [ -z "$NEWS_API_KEY" ]; then
+            echo "NEWS_API_KEY secret is not set!"
+            echo "Go to Settings > Secrets > Actions and add it."
+            exit 1
+          else
+            echo "NEWS_API_KEY is configured"
+          fi
+          
           if [ -z "$MY_EMAIL" ]; then
             echo "MY_EMAIL secret is not set!"
             echo "Go to Settings > Secrets > Actions and add it."
@@ -34,12 +49,20 @@ jobs:
             echo "MY_EMAIL is configured"
           fi
 
-          if [ -z "$MY_PASSWORD" ]; then
-            echo "MY_PASSWORD secret is not set!"
+          if [ -z "$PASSWORD" ]; then
+            echo "PASSWORD secret is not set!"
             echo "Go to Settings > Secrets > Actions and add it."
             exit 1
           else
-            echo "MY_PASSWORD is configured"
+            echo "PASSWORD is configured"
+          fi
+
+          if [ -z "$TO_EMAIL" ]; then
+            echo "TO_EMAIL secret is not set!"
+            echo "Go to Settings > Secrets > Actions and add it."
+            exit 1
+          else
+            echo "TO_EMAIL is configured"
           fi
 
           echo ""
@@ -63,10 +86,10 @@ jobs:
             exit 1
           fi
 
-          if [ -f "birthdays.csv" ]; then
-            echo "birthdays.csv found"
+          if [ -f "watchlist.py" ]; then
+            echo "watchlist.py found"
           else
-            echo "birthdays.csv not found!"
+            echo "watchlist.py not found!"
             exit 1
           fi
 
@@ -74,7 +97,9 @@ jobs:
           echo "All required files found!"
 
       - name: Test Python syntax
-        run: python -m py_compile main.py && echo "Python syntax OK"
+        run: |
+          python -m py_compile main.py watchlist.py
+          echo "Python syntax OK"
 
       - name: Success
         run: |
