@@ -2,19 +2,7 @@ name: Daily Script
 
 on:
   schedule:
-    # ╔═══════════════════════════════════════════════════════════════╗
-    # ║  CHANGE THE LINE BELOW to set when your script runs          ║
-    # ║                                                                ║
-    # ║  Format:  'MINUTE HOUR * * *'                                  ║
-    # ║                                                                ║
-    # ║  Examples:                                                     ║
-    # ║    '0 9 * * *'   = 9:00 AM UTC daily                          ║
-    # ║    '30 14 * * *' = 2:30 PM UTC daily                          ║
-    # ║    '0 0 * * *'   = Midnight UTC daily                         ║
-    # ║                                                                ║
-    # ║  Use https://time.is/UTC to find your local time in UTC       ║
-    # ╚═══════════════════════════════════════════════════════════════╝
-    - cron: '0 9 * * *'
+    - cron: '0 13 * * 1-5'
 
   # This adds a "Run workflow" button so you can test manually
   workflow_dispatch:
@@ -22,6 +10,7 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout repository
@@ -41,6 +30,8 @@ jobs:
         env:
           # Your secrets are available as environment variables
           # Add more secrets in Settings > Secrets > Actions
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           MY_EMAIL: ${{ secrets.MY_EMAIL }}
-          MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
         run: python main.py
