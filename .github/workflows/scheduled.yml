@@ -1,4 +1,4 @@
-name: Daily Script
+name: Daily Stock Market Email
 
 on:
   schedule:
