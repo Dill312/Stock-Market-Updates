@@ -2,7 +2,7 @@ name: Daily Stock Market Email
 
 on:
   schedule:
-    - cron: '0 13 * * 1-5'
+    - cron: '17 13 * * 1-5'
 
   # This adds a "Run workflow" button so you can test manually
   workflow_dispatch:
